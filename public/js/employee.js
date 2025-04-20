@@ -25,44 +25,34 @@ document.addEventListener('DOMContentLoaded', () => {
     
 });
 
-// Placeholder: Function to load assigned modules
+// --- Load assigned modules for the dashboard ---
 async function loadAssignedModules() {
     const moduleOverview = document.querySelector('.module-overview');
     if (!moduleOverview) return;
-
-    // Clear existing example content (or loading message)
-    moduleOverview.innerHTML = '<p>Loading your modules...</p>';
+    moduleOverview.innerHTML = ''; // Clear any loading/error message
 
     try {
-        // --- TODO: Replace with actual API call --- 
-        // const modules = await apiRequest('/api/employee/modules'); // Example endpoint
-        
-        // --- Example Static Data --- 
+        // --- Reverted to Static Data --- 
+        // const modules = await apiRequest('/api/modules/assigned'); 
         const modules = [
             { id: 1, title: 'POS Basics Training', status: 'Not Started', progress: 0 },
             { id: 2, title: 'Customer Service Essentials', status: 'In Progress', progress: 50 },
             { id: 3, title: 'Workplace Safety', status: 'Completed', progress: 100 },
         ];
-        // --- End Example Data ---
-
+        // --- End Static Data ---
+        
         if (modules && modules.length > 0) {
             moduleOverview.innerHTML = ''; // Clear loading message
             modules.forEach(module => {
                 const card = document.createElement('div');
                 card.className = 'module-card';
-                if (module.status === 'Completed') {
-                    card.classList.add('completed');
-                }
-                
-                // Determine progress text
-                let progressText = `${module.progress}% Complete`;
+                let progressText = module.progress !== undefined ? `${module.progress}% Complete` : 'Status Unknown';
                 if (module.status === 'Not Started') progressText = 'Not Started';
                 else if (module.status === 'Completed') progressText = 'Completed';
-
                 card.innerHTML = `
                     <h3>${module.title}</h3>
                     <p>${progressText}</p>
-                    <a href="module.html?moduleId=${module.id}" class="button play-button">${module.status === 'Completed' ? 'View' : '▶'}</a> 
+                    <a href="module.html?moduleId=${module.id}" class="button play-button">${module.status === 'Completed' ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-play"></i>'}</a> 
                 `;
                 moduleOverview.appendChild(card);
             });
@@ -70,38 +60,36 @@ async function loadAssignedModules() {
             moduleOverview.innerHTML = '<p>No modules assigned yet.</p>';
         }
     } catch (error) {
-        console.error('Failed to load modules:', error);
-        moduleOverview.innerHTML = '<p class="error-message">Could not load modules. Please try again later.</p>';
-        // Optionally use showMessage from api.js if the element exists
+        // Error handling might not be triggered with static data, but keep for consistency
+        console.error('Error processing static modules:', error);
+        moduleOverview.innerHTML = '<p class="error-message">Could not display assigned modules.</p>';
     }
 }
 
-// Placeholder: Function to load performance summary
+// --- Load performance summary for the dashboard ---
 async function loadPerformanceSummary() {
     const modulesCompletedEl = document.getElementById('modules-completed');
     const averageScoreEl = document.getElementById('average-score');
-
     if (!modulesCompletedEl || !averageScoreEl) return;
 
     try {
-         // --- TODO: Replace with actual API call --- 
-        // const summary = await apiRequest('/api/employee/performance'); // Example endpoint
-
-        // --- Example Static Data ---
+        // --- Reverted to Static Data --- 
+        // const summary = await apiRequest('/api/progress/summary');
         const summary = {
             modulesCompleted: 1, // Example value
             averageScore: 85.5 // Example value (or null if none completed)
         };
-        // --- End Example Data ---
-
-        modulesCompletedEl.textContent = summary.modulesCompleted;
-        averageScoreEl.textContent = summary.averageScore !== null ? `${summary.averageScore.toFixed(1)}%` : 'N/A';
+        // --- End Static Data ---
+        
+        modulesCompletedEl.textContent = summary.modulesCompleted ?? '-';
+        averageScoreEl.textContent = summary.averageScore !== null && summary.averageScore !== undefined 
+                                        ? `${summary.averageScore.toFixed(1)}%` 
+                                        : 'N/A';
 
     } catch (error) {
-        console.error('Failed to load performance summary:', error);
+         console.error('Error processing static summary:', error);
         modulesCompletedEl.textContent = '-';
         averageScoreEl.textContent = '-';
-         // Optionally show an error message
     }
 }
 
